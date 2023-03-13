@@ -10,30 +10,29 @@ import PostsExcerpt from './PostsExcerpt';
 
 const PostsList = () => {
   const dispatch = useDispatch();
+
   const posts = useSelector(selectAllPosts);
-  const postsStatus = useSelector(getPostsStatus);
+  const postStatus = useSelector(getPostsStatus);
   const error = useSelector(getPostsError);
 
   useEffect(() => {
-    if (postsStatus === 'idle') {
-      dispatch(fetchPosts);
+    if (postStatus === 'idle') {
+      dispatch(fetchPosts());
     }
-  }, [postsStatus, dispatch]);
+  }, [postStatus, dispatch]);
 
   let content;
-  if (postsStatus === 'loading') {
-    content = <p>'Loading...'</p>;
-  } else if (postsStatus === 'succeeded') {
+  if (postStatus === 'loading') {
+    content = <p>"Loading..."</p>;
+  } else if (postStatus === 'succeeded') {
     const orderedPosts = posts
       .slice()
       .sort((a, b) => b.date.localeCompare(a.date));
     content = orderedPosts.map((post) => (
       <PostsExcerpt key={post.id} post={post} />
     ));
-  } else if (postsStatus === 'failed') {
+  } else if (postStatus === 'failed') {
     content = <p>{error}</p>;
-  } else {
-    content = <p>'No posts to display'</p>;
   }
 
   return (
@@ -43,5 +42,4 @@ const PostsList = () => {
     </section>
   );
 };
-
 export default PostsList;
